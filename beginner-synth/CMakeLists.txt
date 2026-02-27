@@ -37,6 +37,7 @@ target_sources(BeginnerSynth
 target_compile_definitions(BeginnerSynth
     PUBLIC
         JUCE_VST3_CAN_REPLACE_VST2=0
+        JUCE_VST3_EMULATE_MIDI_CC_WITH_PARAMETERS=0
         JUCE_WEB_BROWSER=0
         JUCE_USE_CURL=0)
 

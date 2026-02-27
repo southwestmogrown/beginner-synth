@@ -12,7 +12,7 @@ BeginnerSynthAudioProcessor::~BeginnerSynthAudioProcessor() = default;
 
 const juce::String BeginnerSynthAudioProcessor::getName() const
 {
-    return JucePlugin_Name;
+    return "BeginnerSynth";
 }
 
 bool BeginnerSynthAudioProcessor::acceptsMidi() const
@@ -70,8 +70,13 @@ void BeginnerSynthAudioProcessor::changeProgramName(int, const juce::String&)
 {
 }
 
-void BeginnerSynthAudioProcessor::prepareToPlay(double, int)
+void BeginnerSynthAudioProcessor::prepareToPlay(double sampleRate, int)
 {
+  currentSampleRate = sampleRate > 0.0 ? sampleRate : 44100.0;
+  phase = 0.0;
+
+  constexpr double testFrequencyHz = 220.0;
+  phaseIncrement = testFrequencyHz / currentSampleRate;
 }
 
 void BeginnerSynthAudioProcessor::releaseResources()
@@ -102,15 +107,29 @@ void BeginnerSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 {
     juce::ScopedNoDenormals noDenormals;
 
-    for (int channel = 0; channel < getTotalNumInputChannels(); ++channel)
+    constexpr float amplitude = 0.08f;
+    const int numSamples = buffer.getNumSamples();
+    const int numOutputChannels = getTotalNumOutputChannels();
+
+    for (int channel = 0; channel < numOutputChannels; ++channel)
     {
-        buffer.clear(channel, 0, buffer.getNumSamples());
+        buffer.clear(channel, 0, numSamples);
     }
 
-    for (int channel = getTotalNumInputChannels(); channel < getTotalNumOutputChannels(); ++channel)
+    for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
     {
-        buffer.clear(channel, 0, buffer.getNumSamples());
+        const float sampleValue = amplitude * std::sin(juce::MathConstants<double>::twoPi * phase);
+
+        phase += phaseIncrement;
+        if (phase >= 1.0)
+            phase -= 1.0;
+
+        for (int channel = 0; channel < numOutputChannels; ++channel)
+        {
+            buffer.setSample(channel, sampleIndex, sampleValue);
+        }
     }
+
 }
 
 bool BeginnerSynthAudioProcessor::hasEditor() const
