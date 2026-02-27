@@ -1,0 +1,43 @@
+# OS noise
+.DS_Store
+Thumbs.db
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python cache (if any helper scripts appear)
+__pycache__/
+*.pyc
+
+# CMake/Ninja build artifacts
+**/build/
+**/build-*/
+**/CMakeFiles/
+**/CMakeCache.txt
+**/cmake_install.cmake
+**/build.ninja
+**/.ninja_deps
+**/.ninja_log
+**/compile_commands.json
+
+# JUCE build outputs and generated artefacts
+**/*_artefacts/
+**/JuceLibraryCode/
+**/*.vst3/
+**/*.so
+**/*.dll
+**/*.dylib
+**/*.a
+**/*.lib
+**/*.exp
+**/*.pdb
+
+# Local plugin install folders
+.vst3/
+
+# Optional: ignore JUCE framework clone in this repo.
+# Remove this line if you intentionally want to vendor JUCE source.
+JUCE/
