@@ -40,5 +40,6 @@ private:
     double currentSampleRate = 44100.0;
     double phase = 0.0;
     double phaseIncrement = 0.0;
+    bool noteIsOn = false;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(BeginnerSynthAudioProcessor)
 };
