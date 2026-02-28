@@ -103,13 +103,23 @@ bool BeginnerSynthAudioProcessor::isBusesLayoutSupported(const BusesLayout& layo
 }
 #endif
 
-void BeginnerSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
+void BeginnerSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
     juce::ScopedNoDenormals noDenormals;
 
     constexpr float amplitude = 0.08f;
     const int numSamples = buffer.getNumSamples();
     const int numOutputChannels = getTotalNumOutputChannels();
+
+    for (const auto metadata : midiMessages)
+    {
+        const auto message = metadata.getMessage();
+
+        if (message.isNoteOn())
+            noteIsOn = true;
+        else if (message.isNoteOff())
+            noteIsOn = false;
+    }
 
     for (int channel = 0; channel < numOutputChannels; ++channel)
     {
@@ -118,7 +128,10 @@ void BeginnerSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
     for (int sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex)
     {
-        const float sampleValue = amplitude * std::sin(juce::MathConstants<double>::twoPi * phase);
+
+        float sampleValue = 0.0f;
+        if (noteIsOn)
+            sampleValue = amplitude * std::sin(juce::MathConstants<double>::twoPi * phase);
 
         phase += phaseIncrement;
         if (phase >= 1.0)
