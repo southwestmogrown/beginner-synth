@@ -131,7 +131,7 @@ void BeginnerSynthAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
         float sampleValue = 0.0f;
         if (noteIsOn)
-            sampleValue = amplitude * std::sin(juce::MathConstants<double>::twoPi * phase);
+            sampleValue = amplitude * static_cast<float>(std::sin(juce::MathConstants<double>::twoPi * phase));
 
         phase += phaseIncrement;
         if (phase >= 1.0)
